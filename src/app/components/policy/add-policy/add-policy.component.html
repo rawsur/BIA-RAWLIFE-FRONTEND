@@ -1,0 +1,186 @@
+<div class="ant-spin-container ng-star-inserted">
+    
+    <nz-steps [nzCurrent]="current">
+      <nz-step nzTitle="Client" nzIcon="user-add" ></nz-step>
+    </nz-steps>
+
+    <!-- Informations Client -->
+    <div class="steps-content" *ngIf="current === 0" >
+        
+        <form [formGroup]="customerForm" (ngSubmit)="SaveCustomer()" > 
+            
+            <nz-collapse class="ant-collapse ant-collapse-icon-position-left" >
+                
+                <nz-collapse-panel [nzActive]="true" [nzHeader]="header" class="ant-collapse-item ant-collapse-item-active ng-star-inserted" >
+                    
+                    <div nz-row [nzGutter]="24">
+
+                        <div nz-col [nzSpan]="12">
+                            
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Agence</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <nz-select name="agency" formControlName="agency" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let agency of agencies " [nzValue]='agency' nzLabel="{{agency.name}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                            
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">N° Compte</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input mask="00000000000-00" placeholder="Ex. 00000000000-00" maxlength="14" formControlName="accountNumber" name="accountNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Devise Compte</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <nz-select name="accountCurrency" formControlName="accountCurrency" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let currency of currencies " [nzValue]='currency' nzLabel="{{currency.name}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Nom Complet</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input formControlName="fullname" name="fullname" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                        </div>
+
+
+                        <div nz-col [nzSpan]="12">
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Sexe</nz-form-label>
+                                
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="sex" formControlName="sex"  >
+                                    <nz-option nzValue="M" nzLabel="Homme" selected></nz-option>
+                                    <nz-option nzValue="F" nzLabel="Femme"></nz-option>
+                                </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Date Nais.</nz-form-label>
+                                <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                    <nz-date-picker name="dob" formControlName="dob" [nzFormat]="dateFormat" required></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Lieu Nais</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input name="poBirth" formControlName="poBirth" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    <div nz-row [nzGutter]="24">
+                        <div nz-col [nzSpan]="12">
+                                
+                                <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">Adresse</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input name="address" formControlName="address" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                    </nz-form-control>
+                                </nz-form-item>
+
+                                <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">N° Phone</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input mask="+000-000000000" placeholder="Ex. +243-810000000" maxlength="14" name="phoneNumber" formControlName="phoneNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                    </nz-form-control>
+                                </nz-form-item>
+
+
+                                <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">Utilisateur</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input name="user" formControlName="user" [ngModel]="sessionData" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
+                                    </nz-form-control>
+                                </nz-form-item>
+
+                        </div>
+
+                        <div nz-col [nzSpan]="12">
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-select name="subscrib" formControlName="subscrib" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let subscriber of subscribers " [nzValue]='subscriber' nzLabel="{{subscriber.name}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Package</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-select name="pkg" formControlName="pkg" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let pkg of pkgs " [nzValue]='pkg' nzLabel="{{pkg.name}} - {{pkg.capital}} USD" > </nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Date Effet</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-date-picker name="effect_date" formControlName="effect_date" [nzFormat]="dateFormat"  required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input"></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+
+                    </div>
+
+                </nz-collapse-panel>
+
+            </nz-collapse>
+
+        </form>
+                            
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="steps-action">
+      
+      <button nz-button nzType="primary" (click)="SaveCustomer(  )" [disabled] = "!customerForm.valid" >
+        <span>Sauvegarder</span>
+      </button>
+     
+      <button nz-button nzType="primary" (click)="SaveCustomer()"   >
+        <span>Imprimer</span>
+      </button>
+
+    </div>
+
+</div>

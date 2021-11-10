@@ -1,0 +1,140 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Agences par Souscripteur</h4>
+        <div class="width-100">
+            <nz-table #middleTable nzSize="middle">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Nom</th>
+                    <th>Souscripteur</th>
+                    <th>Utilisateur</th>
+                    <th>Date Cr&eacute;ation</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody *ngIf="agencies">
+                <tr *ngFor="let agency of agencies">
+                    <td>{{ agency.codeAgence }}</td>
+                    <td>{{ agency.name}}</td>
+                    <td>{{ agency.subscriber.name}}</td>
+                    <td>{{ agency.user.username }}</td>
+                    <td>{{ agency.createdAt | date : 'dd/MM/YYYY HH:mm:SS' }}</td>
+                    
+                    <td> 
+                        <button nz-button nzType="default" nzSize="small" (click)="showAgency(agency)" > 
+                            <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                        </button> 
+                        | 
+                        <button nz-button nzType="default" nzSize="small" (click)="editAgency(agency)"> 
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button> 
+                        |
+                        <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Supprimer" nzSize="small" (click)="showDeleteConfirm(agency)" > 
+                            <i nz-icon nzType="delete" nzTheme="outline"></i>
+                        </button>
+                    
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Détail Devise"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" *ngIf="agency" >
+            <p><b>Nom Agence</b>      : {{agency.name}}</p>
+            <p><b>Code Agence</b>     : {{agency.codeAgence }}</p>
+            <p><b>Souscripteur</b>    : {{agency.subscriber.name}}</p>
+            <p><b>Cr&eacute;e le</b>  : {{agency.createdAt  | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+            <p><b>Cr&eacute;e par</b> : {{agency.user.username }}</p>
+        </div>
+      </ng-container>
+</nz-modal>
+
+
+
+
+
+<!-- Modal Edition -->
+<nz-modal *ngIf="agency" 
+    [(nzVisible)]="isEditable"
+    nzTitle="Edition Agence"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOkEditAgency(agency)"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" >
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Nom Agence</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <input nz-input name="name" [(ngModel)]="agency.name" ngValue="agency.name" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Code Agence</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <nz-input-number name="codeAgence" [(ngModel)]="agency.codeAgence" ngValue="agency.codeAgence" [nzMin]=1 required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" ></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <nz-select name="subscriber" [compareWith]="compareFn" [(ngModel)]="agency.subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                            <nz-option *ngFor="let subs of subscribers " [nzValue]="subs"  [nzLabel]="subs.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Date Cr&eacute;ation </nz-form-label>
+                    <nz-form-control [nzSpan]="12"nzHasFeedback>
+                        <nz-date-picker name="createdAt" [(ngModel)]="agency.createdAt" ngValue="agency.createdAt" [nzFormat]="dateFormat" required></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; Par. </nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                        <nz-select name="user" nzDisabled [compareWith]="compareFn" [(ngModel)]="agency.user" class="ant-input ng-pristine ng-valid ng-touched" >
+                            <nz-option [nzValue]="agency.user"  [nzLabel]="agency.user.username"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+        </div>
+      </ng-container>
+</nz-modal>

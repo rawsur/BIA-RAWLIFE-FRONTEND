@@ -1,0 +1,146 @@
+<div class="ant-spin-container ng-star-inserted">
+    
+    <!-- Informations Client -->
+    <div class="steps-content" >
+        
+        <form *ngIf="policy" #editCustomerForm="ngForm" (ngSubmit)="onSubmit(policy)" > 
+            
+            <nz-collapse class="ant-collapse" >
+                
+                <nz-collapse-panel [nzActive]="true" nzHeader="Edit Policy" class="ant-collapse-item  ng-star-inserted" >
+                    
+                    <div nz-row [nzGutter]="24">
+
+                        <div nz-col [nzSpan]="12">
+                            
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">N° Compte</nz-form-label> 
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <!--input nz-input name="accountNumber" value={{policy.customer.accountNumber}} ngModel [(ngModel)]="policy.customer.accountNumber"  required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input"/-->
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Nom Complet</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input name="fullname"  name="fullname" value={{policy.customer.fullname}} [(ngModel)]="policy.customer.fullname"hrequired class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Sexe</nz-form-label>
+                                
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="sex" [(ngModel)]="policy.customer.sex"  >
+                                    <nz-option nzValue="M" nzLabel="Homme" [nzHide]="policy.customer.sex==='M'" ></nz-option>
+                                    <nz-option nzValue="F" nzLabel="Femme" [nzHide]="policy.customer.sex==='F'" ></nz-option>
+                                </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+                        <div nz-col [nzSpan]="12">
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Date Nais.</nz-form-label>
+                                <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                    <nz-date-picker name="dob" [nzDefaultPickerValue]="policy.customer.dob"  [(ngModel)]="policy.customer.dob" [nzFormat]="dateFormat" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input"></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Lieu Nais</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input name="poBirth" ngValue= "policy.customer.poBirth" [(ngModel)]="policy.customer.poBirth" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input name="poBirth" ngValue= "policy.customer.poBirth" [(ngModel)]="policy.customer.poBirth" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div nz-row [nzGutter]="24">
+                        <div nz-col [nzSpan]="12">
+                                
+                                <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">Adresse</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input name="address" ngValue="policy.customer.address" [(ngModel)]="policy.customer.address" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                    </nz-form-control>
+                                </nz-form-item>
+
+                                <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">N° Phone</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input name="phoneNumber" ngValue="policy.customer.phoneNumber" [(ngModel)]="policy.customer.phoneNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                    </nz-form-control>
+                                </nz-form-item>
+
+
+                                
+
+                        </div>
+
+                        <div nz-col [nzSpan]="12">
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Package</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-select name="pkg" [(ngModel)]="policy.pkge" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let package of pkgs " [nzValue]="package"  nzLabel="{{package.name}}" ></nz-option>
+                                        <nz-option nzLabel="{{policy.pkge.name}}" [nzValue]="policy.pkge" nzHide></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Date Effet</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-date-picker name="effect_date" [nzDefaultPickerValue]="policy.effect_date" [(ngModel)]="policy.effect_date" [nzFormat]="dateFormat" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input"></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Utilisateur</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <input nz-input name="user" [ngModel]="sessionData" ngValue="policy.user" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+
+                    </div>
+
+                    <div style="text-align:center;">
+                        <button nz-button nzType="primary" type="submit" >
+                            <span>Mettre a Jour</span>
+                        </button>
+
+                        <button nz-button nzType="primary"  >
+                            <span>Imprimer</span>
+                        </button>
+                    </div>
+
+                </nz-collapse-panel>
+
+            </nz-collapse>
+
+        </form>
+                            
+    </div>
+
+</div>

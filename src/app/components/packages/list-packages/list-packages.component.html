@@ -1,0 +1,156 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Packages par Souscripteur</h4>
+        <div class="width-100">
+            <nz-table #middleTable nzSize="middle">
+            <thead>
+                <tr>
+                    <th>Nom Package</th>
+                    <th>Capital</th>
+                    <th>Prime</th>
+                    <th>Souscripteur</th>
+                    <th>Utilisateur</th>
+                    <th>Date Cr&eacute;ation</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pkg of packages">
+                    <td>{{ pkg.name }}</td>
+                    <td>{{ pkg.capital | currency :'USD':'symbol':'1.2-2' }}</td>
+                    <td>{{ pkg.premium | currency :'USD':'symbol':'1.2-2' }}</td>
+                    <td>{{ pkg.subscriber.name }}</td>
+                    <td>{{ pkg.user.username }}</td>
+                    <td>{{ pkg.createdAt | date : 'dd/MM/YYYY HH:mm:SS' }}</td>
+                    
+                    <td> 
+                        <button nz-button nzType="default" nzSize="small" (click)="showPackage(pkg)" > 
+                            <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                        </button> 
+                        | 
+                        <button nz-button nzType="default" nzSize="small" (click)="editPackage(pkg)"> 
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button> 
+                        |
+                        <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Supprimer" nzSize="small" (click)="showDeleteConfirm(pkg)" > 
+                            <i nz-icon nzType="delete" nzTheme="outline"></i>
+                        </button>
+                    
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Détail Package"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" *ngIf="package" >
+            <p><b>Nom Package</b>      : {{package.name}}</p>
+            <p><b>Capital</b>          : {{package.capital | currency :'USD':'symbol':'1.2-2' }}</p>
+            <p><b>Prime</b>            : {{package.premium | currency :'USD':'symbol':'1.2-2' }}</p>
+            <p><b>Souscripteur</b>     : {{package.subscriber.name}}</p>
+            <p><b>Cr&eacute;e le</b>   : {{package.createdAt  | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+            <p><b>Cr&eacute;e par</b>  : {{package.user.username }}</p>
+        </div>
+      </ng-container>
+</nz-modal>
+
+
+
+
+
+
+
+
+<!-- Modal Edition -->
+<nz-modal *ngIf="package" 
+    [(nzVisible)]="isEditable"
+    nzTitle="Edition Package"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOkEditPackage(package)"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" >
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Nom Package</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <input nz-input name="name" [(ngModel)]="package.name" ngValue="package.name" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Capital Package</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <nz-input-number name="package" [(ngModel)]="package.capital" ngValue="package.capital" [nzMin]=1 required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" ></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Prime Package</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <nz-input-number name="premium" [(ngModel)]="package.premium" ngValue="package.premium" [nzMin]=1 required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" ></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <nz-select name="package" [compareWith]="compareFn" [(ngModel)]="package.subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                            <nz-option *ngFor="let subs of subscribers " [nzValue]="subs"  [nzLabel]="subs.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Date Cr&eacute;ation </nz-form-label>
+                    <nz-form-control [nzSpan]="12"nzHasFeedback>
+                        <nz-date-picker name="createdAt" [(ngModel)]="package.createdAt" ngValue="package.createdAt" [nzFormat]="dateFormat" required></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; Par. </nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                        <nz-select name="user" nzDisabled [compareWith]="compareFn" [(ngModel)]="package.user" class="ant-input ng-pristine ng-valid ng-touched" >
+                            <nz-option [nzValue]="package.user"  [nzLabel]="package.user.username"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+        </div>
+        
+    </ng-container>
+
+</nz-modal>

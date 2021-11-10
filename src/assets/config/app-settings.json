@@ -1,0 +1,9 @@
+{
+    "apiBaseUrl": "http://localhost:8081/",
+    "appOwner": "RAWSUR LIFE S.A",
+    "appName": "Bulletin Individuelle Adhésion",
+    "logo":"logo_rawlife.png",
+    "ownerPhone":"+243829999260",
+    "ownerAddress":"90, Boulevard du 30 Juin, Commune de la Gombe, Kinshasa, RDC.",
+    "version":"1.0.0"
+}

@@ -1,0 +1,122 @@
+<ul nz-menu nzTheme="dark" nzMode="inline">
+
+                <li nz-submenu nzTitle="Police" nzIcon="insurance">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/policy/add-policy" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/policy/list-policy" class="navbar-brand" routerLinkActive="active" >
+                            Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li nz-menu-item>
+                    <a routerLink="/customer/list-customer" class="navbar-brand" routerLinkActive="active" >
+                        <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+                        <span>Clients</span>
+                    </a>
+                </li>
+
+
+                <li nz-submenu nzTitle="Agence" nzIcon="verified" *ngIf="sessionrole==='ROLE_ADMIN'">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/agency/add-agency" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/agency/list-agency" class="navbar-brand" routerLinkActive="active" >
+                            Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li nz-submenu nzTitle="Devise" nzIcon="verified" *ngIf="sessionrole==='ROLE_ADMIN'">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/currency/add-currency" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/currency/list-currency" class="navbar-brand" routerLinkActive="active" >
+                            Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                
+                <li nz-submenu nzTitle="Packages" nzIcon="verified" *ngIf="sessionrole==='ROLE_ADMIN'">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/package/add-package" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/package/list-package" class="navbar-brand" routerLinkActive="active" >
+                            Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li nz-submenu nzTitle="Souscripteur" nzIcon="tags" *ngIf="sessionrole==='ROLE_ADMIN'">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/subscriber/add-subscriber" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/subscriber/list-subscriber" class="navbar-brand" routerLinkActive="active" >
+                                 Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li nz-submenu nzTitle="Utilisateurs" nzIcon="user" *ngIf="sessionrole==='ROLE_ADMIN'">
+                    <ul>
+                        <li nz-menu-item>
+                            <a routerLink="/user/add-user" class="navbar-brand" routerLinkActive="active" >
+                            Nouveau
+                            </a>
+                        </li>
+
+                        <li nz-menu-item>
+                            <a routerLink="/user/list-user" class="navbar-brand" routerLinkActive="active" >
+                                 Consultation
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li nz-menu-item>
+                    <a routerLink="/user/password-change" class="navbar-brand" routerLinkActive="active" >
+                        <i nz-icon nzType="reload" nzTheme="outline"></i>Changer mot de passe
+                    </a>
+                </li>
+
+                <li nz-menu-item>
+                    <a routerLink="/logout" (click) = "logout()" class="navbar-brand" routerLinkActive="active" >
+                        <i nz-icon nzType="logout" nzTheme="outline"></i>D&eacute;connexion
+                    </a>
+                </li>
+
+</ul>

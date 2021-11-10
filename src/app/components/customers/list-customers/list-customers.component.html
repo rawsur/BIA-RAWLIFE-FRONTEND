@@ -1,0 +1,212 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Clients Police</h4>
+        <div class="width-100">
+            <nz-table #middleTable nzSize="middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom complet</th>
+                    <th>Sexe</th>
+                    <th>Date Naiss.</th>
+                    <th>Lieu Naiss.</th>
+                    <th>Adresse</th>
+                    <th>N° Phone</th>
+                    <th>Agence</th>
+                    <th>Souscripteur</th>
+                    <th>Utilisateur</th>
+                    <th>Date Cr&eacute;ation</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let customer of customers">
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.fullname }}</td>
+                    <td>{{ customer.sex }}</td>
+                    <td>{{ customer.dob | date : 'dd/MM/YYYY' }}</td>
+                    <td>{{ customer.poBirth }}</td>
+                    <td>{{ customer.address }}</td>
+                    <td>{{ customer.phoneNumber }}</td>
+                    <td>{{ customer.agency.name }}</td>
+                    <td>{{ customer.subscriber.name }}</td>
+                    <td>{{ customer.user.username }}</td>
+                    <td>{{ customer.createdAt | date : 'dd/MM/YYYY' }}</td>
+                    
+                    <td> 
+                        <button nz-button nzType="default" nzSize="small" (click)="showCustomer(customer)" > 
+                            <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                        </button> 
+                        | 
+                        <button nz-button nzType="default" nzSize="small" (click)="editCustomer(customer)" > 
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button> 
+                        |
+                        <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Supprimer" nzSize="small" (click)="showDeleteConfirm(customer)" > 
+                            <i nz-icon nzType="delete" nzTheme="outline"></i>
+                        </button> 
+                    
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Detail Client"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent>
+        <div class="card" *ngIf="customer" >
+            <p><b>Nom complet</b>      : {{customer.fullname}}</p>
+            <p><b>Sexe</b>             : {{customer.sex}}</p>
+            <p><b>Date Naissance</b>   : {{customer.dob | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+            <p><b>Lieu Naissance</b>   : {{customer.poBirth}}</p>
+            <p><b>Souscripteur</b>     : {{customer.subscriber?.name || 'N/A' }}</p>
+            <p><b>Adresse</b>          : {{customer.address}}</p>
+            <p><b>N° Phone</b>         : {{customer.phoneNumber}}</p>
+            <p><b>Agence</b>           : {{customer.agency.name}}</p>
+            <p><b>N° Compte</b>        : {{customer}}</p>
+            <p><b>Souscripteur</b>     : {{customer.subscriber.name}}</p>
+            <p><b>Cr&eacute;e le</b>   : {{customer.createdAt  | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+            <p><b>Cr&eacute;e par</b>  : {{customer.user.username }}</p>
+        </div>
+    </ng-container>
+</nz-modal>
+
+
+
+<!-- Modal Edit -->
+<nz-modal
+    [(nzVisible)]="isVisibleEdit"
+    nzTitle="Edition Client"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" *ngIf="customer" >
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">N° Compte</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <!--nz-select name="account" [compareWith]="compareFn" [(ngModel)]="customer.account" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let subs of subscribers " [nzValue]="subs"  [nzLabel]="subs.name"></nz-option>
+                                </nz-select-->
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Nom Complet</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="fullname" [(ngModel)]="customer.fullname" ngValue="customer.fullname" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+                    
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Sexe</nz-form-label>            
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="sex" [(ngModel)]="customer.sex"  >
+                                    <nz-option nzValue="M" nzLabel="Homme" [nzHide]="customer.sex==='M'" ></nz-option>
+                                    <nz-option nzValue="F" nzLabel="Femme" [nzHide]="customer.sex==='F'" ></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Date Nais.</nz-form-label>
+                            <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                <nz-date-picker name="dob" [(ngModel)]="customer.dob" ngValue="customer.dob" [nzFormat]="dateFormat" required></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Lieu Nais</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="poBirth" ngValue= "customer.poBirth" [(ngModel)]="customer.poBirth" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+
+                    </p>
+
+                </div>
+            
+                <div nz-col [nzSpan]="12">
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Adresse</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                <input nz-input name="address" ngValue="customer.address" [(ngModel)]="customer.address" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">N° Phone</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                <input nz-input name="phoneNumber" ngValue="customer.phoneNumber" [(ngModel)]="customer.phoneNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="subscriber" [compareWith]="compareFn" [(ngModel)]="customer.subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let subs of subscribers " [nzValue]="subs"  [nzLabel]="subs.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Cr&eacute;r&eacute; Le. </nz-form-label>
+                            <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                <nz-date-picker name="createdAt" [(ngModel)]="customer.createdAt" ngValue="customer.createdAt" [nzFormat]="dateFormat" required nzDisabled></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+                    
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; Par. </nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                <nz-select name="user" nzDisabled [compareWith]="compareFn" [(ngModel)]="customer.user" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option [nzValue]="customer.user"  [nzLabel]="customer.user.username"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</nz-modal>

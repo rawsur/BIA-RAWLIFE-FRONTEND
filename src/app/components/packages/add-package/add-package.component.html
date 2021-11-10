@@ -1,0 +1,89 @@
+<div class="ant-spin-container ng-star-inserted">
+    
+    <nz-steps [nzCurrent]="current">
+      <nz-step nzTitle="Client" nzIcon="user-add" ></nz-step>
+    </nz-steps>
+
+    <!-- Informations Client -->
+    <div class="steps-content" *ngIf="current === 0" >
+        
+        <form [formGroup]="packageForm" (ngSubmit)="SavePackage()" > 
+            
+            <nz-collapse class="ant-collapse ant-collapse-icon-position-left" >
+                
+                <nz-collapse-panel [nzActive]="true" [nzHeader]="header" class="ant-collapse-item ant-collapse-item-active ng-star-inserted" >
+                    
+                    <div nz-row [nzGutter]="24">
+
+                        <div nz-col [nzSpan]="12">
+                            
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Nom Package</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input formControlName="pkgName" name="pkgName" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Capital Package</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <nz-input-number name="capital" formControlName="capital" [nzMin]=1 required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" ></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Prime Package</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <nz-input-number name="premium" formControlName="premium"  [nzMin]=1 required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" ></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+                        
+                        <div nz-col [nzSpan]="12">
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                    <nz-select name="subscrib" formControlName="subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                                        <nz-option *ngFor="let subscriber of subscribers " [nzValue]='subscriber' nzLabel="{{subscriber.name}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                    <nz-form-label [nzSpan]="10">Utilisateur</nz-form-label>
+                                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                        <input nz-input name="user" formControlName="user" [ngModel]="sessionData" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
+                                    </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+
+                    </div>
+
+                </nz-collapse-panel>
+
+            </nz-collapse>
+
+        </form>
+                            
+    </div>
+
+
+
+    <div class="steps-action">
+      
+      <button nz-button nzType="primary" (click)="SavePackage()" [disabled] = "!packageForm.valid" >
+        <span>Sauvegarder</span>
+      </button>
+     
+      <button nz-button nzType="primary"  >
+        <span>Imprimer</span>
+      </button>
+
+    </div>
+
+</div>

@@ -1,0 +1,38 @@
+<section>
+
+    <div class="page">
+
+        <div class="welcome" id="welcome" style="background: rgb(37, 58, 123);">
+            <h2 id="labelSociete" style="color: rgb(255, 255, 255);">{{appOwner}}</h2>
+            <p id="loginMessage" style="color: rgb(255, 255, 255);">Tél.: {{ownerPhone}}  <br> Adresse: {{ownerAddress}}</p>
+        </div>
+
+        <div class="login" id="login">
+            <img id="logo" src="assets/img/{{logo}}"/>
+
+            <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="checkLogin()" autocomplete="off" method="POST">
+            
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Renseigner le nom d'utilisateur svp!">
+                        <nz-input-group nzPrefixIcon="user">
+                            <input type="text" nz-input formControlName="username" placeholder="username" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Renseigner le mot de passe svp!">
+                    <nz-input-group nzPrefixIcon="lock">
+                        <input type="password" nz-input formControlName="password" placeholder="password" />
+                    </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+                
+                <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" [disabled] = "!validateForm.valid" >Connecter</button>
+
+            </form>
+        </div>
+
+    </div>
+
+</section>

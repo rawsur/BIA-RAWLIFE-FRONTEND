@@ -1,0 +1,151 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Utilisateurs</h4>
+        <div class="width-100">
+            <nz-table #middleTable nzSize="middle">
+            <thead>
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Nom Utilisateur</th>
+                    <th>Role</th>
+                    <th>Souscripteur</th>
+                    <th>Agence</th>
+                    <th>Date Cr&eacute;ation</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.fullname }}</td>
+                    <td> 
+                        <!--span ngSwitchCase="ROLE_ADMIN"> ADMIN </span>  
+                        <span ngSwitchCase="ROLE_USER"> USER </span-->  
+                        {{user.role}}
+                    </td>
+                    <td>{{ user.subscriber ? user.subscriber.name : 'N/A' }}</td>
+                    <td>{{ user.agency ? user.agency.name : 'N/A'  }}</td>
+                    <td>{{ user.createdAt | date:'dd/MM/YYYY HH:mm:SS' }}</td>
+                    
+                    <td> 
+                        <button nz-button nzType="default" nzSize="small" (click)="showUser(user)" > 
+                            <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                        </button> 
+                        | 
+                        <button nz-button nzType="default" nzSize="small" (click)="editUser(user)" > 
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button> 
+                        |
+                        <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Pwd Reset" nzSize="small" (click)="showReset(user)" > 
+                            <i nz-icon nzType="reload" nzTheme="outline"></i>
+                        </button>
+                    
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    *ngIf="user"
+    [(nzVisible)]="isVisible"
+    nzTitle="Détail Utilisateur"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" >
+            <p><b>Code Utilisateur</b>      : {{user.username}}</p>
+            <p><b>Nom Utilisateur</b>       : {{ user.fullname ? user.fullname : 'N/A' }}</p>
+            <p><b>Souscripteur</b>     : {{ user.subscriber ? user.subscriber.name : 'N/A' }}</p>
+            <p><b>Agence</b>            : {{ user.agency ? user.agency.name : 'N/A' }}</p>
+            <p><b>Cr&eacute;e le</b>   : {{user.createdAt  | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+            <!-- p><b>Cr&eacute;e par</b>  : {{usersername }}</p-->
+        </div>
+      </ng-container>
+</nz-modal>
+
+
+
+
+
+
+
+<!-- Modal Edition -->
+<nz-modal
+    *ngIf="user"
+    [(nzVisible)]="isEditable"
+    nzTitle="Edition Utilisateur"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    (nzOnOk)="handleEdit(user)"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" >
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Code Utilisateur</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="username"  [(ngModel)]="user.username" ngValue="user.username" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Nom Utilisateur</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="fullname" [(ngModel)]="user.fullname" ngValue="user.fullname" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+
+                </div>
+
+                <div nz-col [nzSpan]="12">
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Souscripteur</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="subscriber" [compareWith]="compareFn" [(ngModel)]="user.subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let subs of subscribers " [nzValue]="subs"  [nzLabel]="subs.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Agence</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="agency" [compareWith]="compareFn" [(ngModel)]="user.agency" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let agen of agencies " [nzValue]="agen"  [nzLabel]="agen.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </ng-container>
+</nz-modal>

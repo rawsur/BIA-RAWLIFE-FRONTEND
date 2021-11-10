@@ -1,0 +1,128 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4 style="text-align:center;">Liste de Souscripteurs</h4>
+        <div class="width-100">
+            <nz-table #middleTable nzSize="middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom Souscripteur</th>
+                    <th>Adresse</th>
+                    <th>Utilisateur</th>
+                    <th>Cr&eacute;&eacute; Le. </th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let subscriber of subscribers">
+                    <td>{{ subscriber.id }}</td>
+                    <td>{{ subscriber.name }}</td>
+                    <td>{{ subscriber.address }}</td>
+                    <td>{{ subscriber.user.username }}</td>
+                    <td>{{ subscriber.createdAt | date : 'dd/MM/YYYY' }}</td>
+                    <td> 
+                        <button nz-button nzType="default" nzSize="small" (click)="showSubscriber(subscriber)" > 
+                            <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                        </button>
+                        | 
+                        <button nz-button nzType="default" nzSize="small" (click)="editSubscriber(subscriber)" > 
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button>
+                        |
+                        <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Supprimer" nzSize="small" (click)="showDeleteConfirm(subscriber)"   > 
+                            <i nz-icon nzType="delete" nzTheme="outline"></i>
+                        </button>
+                    
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Détail Souscripteur"
+    nzCentered
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" *ngIf="subscr" >
+            <p><b>Nom Souscripteur</b> : {{subscr.name}}</p>
+            <p><b>Adresse</b>          : {{subscr.address }}</p>
+            <p><b>N° Phone</b>         : {{subscr.phoneNumber}}</p>
+            <p><b>Utilisateur</b>      : {{subscr.user.username}}</p>
+            <p><b>Cr&eacute;e le</b>   : {{subscr.createdAt | date:'dd/MM/YYYY HH:mm:SS' }}</p>
+        </div>
+    </ng-container>
+</nz-modal>
+
+
+
+
+
+<!-- Modal Edition -->
+<nz-modal *ngIf="subscr"
+    [(nzVisible)]="isEditable"
+    nzTitle="Edition Souscripteur"
+    nzCentered
+    (nzOnOk)="handleOkEditSubscriber(subscr)"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" >
+            <!--p><b>Nom Souscripteur</b> : {{subscr.name}}</p>
+            <p><b>Adresse</b>          : {{subscr.address }}</p>
+            <p><b>N° Phone</b>         : {{subscr.phoneNumber}}</p>            <p><b>Utilisateur</b>      : {{subscr.user.username}}</p>
+            <p><b>Cr&eacute;e le</b>   : {{subscr.createdAt | date:'dd/MM/YYYY HH:mm:SS' }}</p-->
+
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Nom Souscripteur</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <input nz-input name="name" [(ngModel)]="subscr.name" ngValue="subscr.name" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Adresse Souscripteur</nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                        <input nz-input name="address" [(ngModel)]="subscr.address" ngValue="subscr.address" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+
+
+             <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Date Cr&eacute;ation </nz-form-label>
+                    <nz-form-control [nzSpan]="12"nzHasFeedback>
+                        <nz-date-picker name="createdAt" [(ngModel)]="subscr.createdAt" ngValue="subscr.createdAt" [nzFormat]="dateFormat" required></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+            <p>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; Par. </nz-form-label>
+                    <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                        <nz-select name="user" nzDisabled [compareWith]="compareFn" [(ngModel)]="subscr.user" class="ant-input ng-pristine ng-valid ng-touched" >
+                            <nz-option [nzValue]="subscr.user"  [nzLabel]="subscr.user.username"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </p>
+            
+        </div>
+    </ng-container>
+</nz-modal>

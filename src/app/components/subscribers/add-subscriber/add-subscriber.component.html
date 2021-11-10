@@ -1,0 +1,72 @@
+<div class="ant-spin-container ng-star-inserted">
+    
+    <nz-steps>
+      <nz-step nzTitle="Client" nzIcon="user-add" ></nz-step>
+    </nz-steps>
+
+    <!-- Informations Client -->
+    <div class="steps-content" >
+        
+        <form #subscriberForm="ngForm" (ngSubmit)="onSubmit(subscriberForm)" > 
+            
+            <nz-collapse class="ant-collapse ant-collapse-icon-position-left" >
+                
+                <nz-collapse-panel [nzActive]="true" [nzHeader]="header" class="ant-collapse-item ant-collapse-item-active ng-star-inserted" >
+                    
+                    <div nz-row [nzGutter]="24">
+
+                        <div nz-col [nzSpan]="12">
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Nom  </nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input [(ngModel)]="subscriber.name" name="name" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Adresse  </nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input [(ngModel)]="subscriber.address" name="address" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                        </div>
+
+
+                        <div nz-col [nzSpan]="12">
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">N° Phone  </nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input [(ngModel)]="subscriber.phoneNumber" name="phoneNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label [nzSpan]="10">Utilisateur  </nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                    <input nz-input name="user" [ngModel]="sessionData" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+
+                    </div>
+
+                </nz-collapse-panel>
+
+            </nz-collapse>
+
+            <button nz-button nzType="primary" type="submit"  >
+                <span>Sauvegarder</span>
+            </button>
+            
+            <button nz-button nzType="primary" type="reset"  >
+                <span>Reset</span>
+            </button>
+
+        </form>
+                            
+    </div>
+
+</div>

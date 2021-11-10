@@ -1,0 +1,240 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Clients Police</h4>
+            <nz-input-group [nzSuffix]="suffixIconSearch">
+                <input type="text" #searchText nz-input placeholder="Rechercher par Nom ici"  Green   (keyup.enter)="search(searchText.value)"/>
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"></i>
+            </ng-template>
+
+            <nz-table #middleTable nzSize="middle" [nzScroll]="{ x: 'scroll', y: 'scroll' }">
+                <thead>
+                    <tr>
+                        <th>Ref</th>
+                        <th>Nom complet</th>
+                        <th>Adresse</th>
+                        <th>Compte</th>
+                        <th>Devise</th>
+                        <th>Date Naiss.</th>
+                        <th>Souscripteur</th>
+                        <th>Package</th>
+                        <th>Forfait Package</th>
+                        <th>Date Effet</th>
+                        <th>Date Ech&eacute;ance</th>
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let policy of policies">
+                        <td>{{policy.ref}} {{ policy.id | number:'5.0' | noThousand }}</td>
+                        <td>{{ policy.customer.fullname }}</td>
+                        <td>{{ policy.customer.address }}</td>
+                        <td>{{ policy.account.accountNumber | mask:'00000000000-00' }}</td>
+                        <td>{{ policy.account.currency.isocode }}</td>
+                        <td>{{ policy.customer.dob | date : 'dd/MM/YYYY' }}</td>
+                        <td>{{ policy.subscriber.name }}</td>
+                        <td>{{ policy.pkge.name }}</td>
+                        <td>{{ policy.pkge.capital | currency :'USD':'symbol':'1.2-2' }}</td>
+                        <td>{{ policy.effect_date | date : 'dd/MM/YYYY' }}</td>
+                        <td>{{ policy.effect_date | date : 'dd/MM/YYYY' }}</td>
+                        <td> 
+                            <button nz-button nzType="default" nzSize="small" (click)="showDetailPolicy(policy)" > 
+                                <i nz-icon nzType="info-circle" nzTheme="outline"></i> 
+                            </button> 
+                            | 
+                            <button nz-button nzType="default" nzSize="small" (click)="showEditConfirm(policy)" > 
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>
+                            </button> 
+                            |
+                            <button nz-button nz-popover nzType="dashed" nzPopoverTitle="Action" nzPopoverContent="Supprimer" nzSize="small" (click)="showDeleteConfirm(policy)" > 
+                                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                            </button> 
+                            |
+                            <button nz-button nzType="default" nzSize="small" (click)="printFile(policy.id)" > 
+                                <i nz-icon nzType="printer" nzTheme="outline"></i>
+                            </button> 
+                        
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal Details -->
+<nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Détail Police"
+    nzCentered
+    (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()"
+>
+    <ng-container *nzModalContent  >
+        <div class="card" *ngIf="policy" >
+            <p><b>Nom Client</b>       : {{policy.customer.fullname}}</p>
+            <p><b>N° Compte</b>        : {{policy.account.accountNumber | mask:'00000000000-00'}}</p>
+            <p><b>Devise Compte</b>    : {{policy.account.currency.isocode}}</p>
+            <p><b>Date Naissance</b>   : {{policy.customer.dob | date:'dd/MM/YYYY' }}</p>
+            <p><b>N° Phone</b>         : {{policy.customer.phoneNumber}}</p>
+            <p><b>Sexe</b>             : {{policy.customer.sex}}</p>
+            <p><b>Souscripteur</b>     : {{policy.customer.subscriber.name}}</p>
+            <p><b>Package</b>          : {{policy.pkge.name}} | Capital {{policy.pkge.capital}}</p>
+            <p><b>Date Effet</b>       : {{policy.effect_date | date:'dd/MM/YYYY' }}</p>
+            <p><b>Date Effet</b>       : {{policy.effect_date | date:'dd/MM/YYYY' }}</p>
+            <p><b>Cr&eacute;e le</b>   : {{ policy.createdAt  | date:'dd/MM/YYYY HH:mm:SS' }}</p>           
+        </div>
+    </ng-container>
+</nz-modal>
+
+
+
+
+
+
+<!-- Modal Edition -->
+<nz-modal *ngIf="policy"
+    [(nzVisible)]="isEditable"
+    nzTitle="Edition Police"
+    nzCancelText="Fermer"
+    (nzOnCancel)="handleCancel()"
+    nzCentered
+    nzOkText="Modifier"
+    (nzOnOk)="handleOkEdit(policy)"
+>
+    <ng-container *nzModalContent  >
+        <div class="card">
+            <div nz-row [nzGutter]="24">
+                
+                <div nz-col [nzSpan]="12">
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Nom Client</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="fullname" [(ngModel)]="policy.customer.fullname" ngValue="policy.customer.fullname" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Devise</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="currency" [compareWith]="compareFn" [(ngModel)]="policy.account.currency" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let curr of currencies " [nzValue]="curr"  [nzLabel]="curr.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">N° Compte</nz-form-label>
+                                <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input mask="00000000000-00" name="accountNumber" [(ngModel)]="policy.account.accountNumber" ngValue="policy.account.accountNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Date Nais.</nz-form-label>
+                            <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                <nz-date-picker name="dob" [(ngModel)]="policy.customer.dob" ngValue="policy.customer.dob" [nzFormat]="dateFormat" required></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                   <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">N° Phone</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <input nz-input name="phoneNumber" ngValue= "policy.customer.phoneNumber" [(ngModel)]="policy.customer.phoneNumber" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" />
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Sexe</nz-form-label>            
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="sex" [(ngModel)]="policy.customer.sex"  >
+                                    <nz-option nzValue="M" nzLabel="Homme" [nzHide]="policy.customer.sex==='M'" ></nz-option>
+                                    <nz-option nzValue="F" nzLabel="Femme" [nzHide]="policy.customer.sex==='F'" ></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Souscripteur. </nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                <nz-select name="subscriber" [compareWith]="compareFn" [(ngModel)]="policy.subscriber" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option [nzValue]="policy.subscriber"  [nzLabel]="policy.subscriber.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                </div>
+
+                <div nz-col [nzSpan]="12">
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Package</nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Champ requis">
+                                <nz-select name="package" [compareWith]="compareFn" [(ngModel)]="policy.pkge" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option *ngFor="let pkg of packages " [nzValue]="pkg"  [nzLabel]="pkg.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Date Effet </nz-form-label>
+                            <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                <nz-date-picker name="effect_date" [(ngModel)]="policy.effect_date" ngValue="policy.effect_date" [nzFormat]="dateFormat" required></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; le. </nz-form-label>
+                            <nz-form-control [nzSpan]="12"nzHasFeedback>
+                                <nz-date-picker name="createdAt" [(ngModel)]="policy.createdAt" ngValue="policy.createdAt" [nzFormat]="dateFormat" required nzDisabled></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                    <p>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="10">Cr&eacute;&eacute; Par. </nz-form-label>
+                            <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
+                                <nz-select name="user" nzDisabled [compareWith]="compareFn" [(ngModel)]="policy.user" class="ant-input ng-pristine ng-valid ng-touched" >
+                                    <nz-option [nzValue]="policy.user"  [nzLabel]="policy.user.username"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </p>
+
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+</nz-modal>
