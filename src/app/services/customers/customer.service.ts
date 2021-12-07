@@ -39,6 +39,18 @@ export class CustomerService {
     return this.httpClient.get( this.url+"get/"+id, requestOptions );
   }
 
+  getCustomerBySubscriber( subscriber:number ) : Observable<any>  {
+    const token = sessionStorage.getItem('token');
+    const headerDict = {
+      "Access-Control-Allow-Origin" : "*",
+      Authorization: `${token}`,
+    }
+    const requestOptions = {                                                                                                                                                                                 
+      headers: new HttpHeaders(headerDict)
+    };
+    return this.httpClient.get( this.url+"get/subscriber/"+subscriber, requestOptions );
+  }
+
 
   getCustomerByUsername( fname:string ): Observable<any> {
     const token = sessionStorage.getItem('token');

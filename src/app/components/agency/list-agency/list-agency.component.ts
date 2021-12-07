@@ -22,13 +22,22 @@ export class ListAgencyComponent implements OnInit {
   isVisible: boolean;
   isEditable: boolean;
   dateFormat:string="dd/MM/YYYY";
+  currentUser: User = new User();
 
-  constructor( private message:NzMessageService, private modal: NzModalService , private agencyService:AgencyService , private subscriberService:SubscriberService , private userService:LoginService ) { }
+  constructor( private message:NzMessageService, private modal: NzModalService , private agencyService:AgencyService , private subscriberService:SubscriberService , private userService:LoginService, private authService:LoginService ) { }
 
   ngOnInit(): void {
     this.sessionData = sessionStorage.getItem('username');
-    this.getAgencies();
-    this.getSubscribers();
+    this.currentUser = this.authService.CurrentUser;
+    if( this.currentUser.subscriber ) {
+      
+      this.getAgenciesBySubscriber( this.currentUser.subscriber.id );
+      this.getSubscribers();
+    }else {
+      this.getAgencies();
+      this.getSubscribers();
+    }
+    
   }
 
   getAgencies() {
@@ -40,7 +49,25 @@ export class ListAgencyComponent implements OnInit {
     )
   }
 
+  getAgenciesBySubscriber( subscriber:number ) {
+    this.agencyService.getAgencies().subscribe(
+      response =>{
+        this.agencies = response;
+      },
+      error => { this.message.error("Erreur " +error.message ) }
+    )
+  }
+
   getSubscribers() {
+    this.subscriberService.getSubscribers().subscribe(
+      response =>{
+        this.subscribers = response;
+      },
+      error => { this.message.error("Erreur " +error.message ) }
+    );
+  }
+
+  getSubscriberuById( subscriber:number ) {
     this.subscriberService.getSubscribers().subscribe(
       response =>{
         this.subscribers = response;
@@ -76,16 +103,7 @@ export class ListAgencyComponent implements OnInit {
     
     let uname:string = this.sessionData;
     
-    await this.userService.getUser(uname).then(
-      response=> {
-        
-        let u = new User();
-        u.id = response.id;
-        u.role=response.password;
-        u.subscriber = response.subscriber
-        u.username = response.username;
-        
-        agency.user_Updated  = u;
+    agency.user_Updated  = this.currentUser;
 
         this.agencyService.updateAgency( agency.id , agency ).subscribe(
             response  => {
@@ -93,11 +111,10 @@ export class ListAgencyComponent implements OnInit {
               this.isVisible=false;
               this.isEditable=false;
               this.getAgencies();
-            }, error  => { console.log(error) }
+            }, error  => { 
+              this.message.error("Error : " +error.error.message );
+            }
         );
-
-      }
-    )
     
   }
 

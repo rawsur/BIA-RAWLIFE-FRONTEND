@@ -3,7 +3,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Customer } from 'src/app/models/customers/customer';
 import { Subscriber } from 'src/app/models/subscribers/subscriber';
+import { User } from 'src/app/models/users/user';
 import { CustomerService } from 'src/app/services/customers/customer.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { SubscriberService } from 'src/app/services/subscribers/subscriber.service';
 
 @Component({
@@ -19,16 +21,34 @@ export class ListCustomersComponent implements OnInit {
   isVisible:boolean;
   isVisibleEdit:boolean;
   dateFormat:string="dd/MM/YYYY";
+  currentUser:User = new User();
 
-  constructor( private message: NzMessageService , private modal: NzModalService , private subService:SubscriberService , private custService : CustomerService ) { }
+  constructor( private message: NzMessageService , private modal: NzModalService , private subService:SubscriberService , private custService : CustomerService, private authService:LoginService ) { }
 
   ngOnInit(): void {
-    this.getCustomers();
+    this.currentUser = this.authService.CurrentUser;
+    if( this.currentUser.subscriber ) {
+      this.getCustomerBySubscriber( this.currentUser.subscriber.id );
+    }else {
+      this.getCustomers();
+    }
     this.getSubscribers();
   }
 
   getCustomers() {
     this.custService.getCustomers().subscribe(
+      response => {
+        this.customers = response;
+      } ,
+      error => {
+        this.message.error("Impossible de charger la liste de clients. " + error.status );
+      }
+    )
+  }
+
+
+  getCustomerBySubscriber( subscriber:number ) {
+    this.custService.getCustomerBySubscriber(subscriber).subscribe(
       response => {
         this.customers = response;
       } ,
@@ -82,6 +102,7 @@ export class ListCustomersComponent implements OnInit {
    * 
    */
   updateCustomer( cust:Customer ){
+    this.customer.user_Updated = this.currentUser;
     this.customer = cust;
     this.custService.updateCustomer(this.customer.id, this.customer).subscribe(
       response  => {

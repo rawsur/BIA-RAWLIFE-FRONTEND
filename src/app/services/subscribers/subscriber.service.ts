@@ -32,6 +32,23 @@ export class SubscriberService {
     return this.httpClient.get(this.url+"list/" , requestOptions);
   }
 
+
+  getSubscriberByLikeId( id:number ): Observable<any> {
+    
+    const token = sessionStorage.getItem('token');
+    this.headers = new HttpHeaders();
+    this.headers.append('authentication', `${token}`);
+    const headerDict = {
+      "Access-Control-Allow-Origin" : "*",
+      Authorization: `${token}`,
+    }
+    
+    const requestOptions = { headers: new HttpHeaders(headerDict)};
+
+    return this.httpClient.get( this.url+"get/subscriber/"+id , requestOptions  );
+
+  }
+
   getSubscriberById( id:number ): Observable<Subscriber> {
     const token = sessionStorage.getItem('token');
     this.headers = new HttpHeaders();

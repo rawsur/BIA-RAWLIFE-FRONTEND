@@ -37,6 +37,15 @@ export class PolicyService {
     return this.httpClient.get(this.url+"list");
   }
 
+  getPoliciesBySubscriber( subscriber:number ) : Observable<any> {
+    return this.httpClient.get(this.url+"get/subscriber/"+subscriber);
+  }
+
+
+  getPoliciesBySubscriberAndAgency( subscriber:number, agency:number ) : Observable<any> {
+    return this.httpClient.get(this.url+"get/subscriber/"+subscriber+"/"+agency);
+  }
+
 
   getPolicyById( id:number ) : Observable<Policy> {
     const token = sessionStorage.getItem('token');

@@ -19,10 +19,14 @@ export class ResetPasswordComponent implements OnInit {
   sessionData:any;
   header="Changement mot de passe!";
   user:User;
+  currentUser:User = new User();
 
-  constructor( private appConfig:AppConfigService , private message:NzMessageService, private modalService:NzModalService , private titleService:Title , private loginService:LoginService , private fb:FormBuilder , private route:Router ) { }
+  constructor( private appConfig:AppConfigService , private message:NzMessageService, private modalService:NzModalService , private titleService:Title , private authService:LoginService , private fb:FormBuilder , private route:Router ) { }
 
   ngOnInit(): void {
+
+    this.currentUser = this.authService.CurrentUser;
+
     this.titleService.setTitle( this.appConfig.appName+ " - Changement mot de passe! " );
     this.sessionData = sessionStorage.getItem('username');
     this.initForms();
@@ -71,22 +75,19 @@ export class ResetPasswordComponent implements OnInit {
     this.user = new User();
     let uname:string = this.passwordForm.controls['user'].value;
 
-    this.user = await this.loginService.getUser( uname );
+    // this.user = await this.authService.getUser( uname );
+    this.user = this.authService.CurrentUser;
 
     let newPwd:string = this.passwordForm.controls['confirmPwd'].value;
     let oldPwd:string = this.passwordForm.controls['oldPwd'].value;
 
     this.user.password = newPwd;
 
-    console.log("New Password : " + newPwd);
-    console.log("User New Password : " + newPwd);
-
-    this.loginService.changeUserPwd( this.user.id, newPwd ).subscribe(
+    this.authService.changeUserPwd( this.user.id, newPwd ).subscribe(
       response=> {
         this.message.success(" Mot de passe changé avec succès! ");
         // this.route.navigate(['/policy/list-policy']);
       }, error=> { 
-        console.log(error); 
         this.message.error("Impossible de changer le mot de passe.");
         this.message.error("Erreur : " +error.error.message );
       }

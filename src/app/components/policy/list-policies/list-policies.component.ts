@@ -13,6 +13,8 @@ import { Currency } from 'src/app/models/currency/currency';
 import { Customer } from 'src/app/models/customers/customer';
 import { AccountService } from 'src/app/services/account/account.service';
 import { CustomerService } from 'src/app/services/customers/customer.service';
+import { LoginService } from 'src/app/services/login/login.service';
+import { User } from 'src/app/models/users/user';
 
 @Component({
   selector: 'app-list-policies',
@@ -33,13 +35,27 @@ export class ListPoliciesComponent implements OnInit {
   messages: any[] = [];
   subscription: Subscription;
   dateFormat:string="dd/MM/YYYY";
+  currentUser:User = new User();
 
-  constructor( private router:Router, private message: NzMessageService , private modal: NzModalService,  private acctService:AccountService , private currService:CurrencyService, private custService:CustomerService , private policyService:PolicyService, private pkgService:PackageService, private reportService:ReportPolicyService ) { }
+  constructor( private router:Router, private message: NzMessageService , private modal: NzModalService,  private acctService:AccountService , private currService:CurrencyService, private custService:CustomerService , private policyService:PolicyService, private pkgService:PackageService, private reportService:ReportPolicyService, private authService:LoginService ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.CurrentUser ;
+
+    if (  this.currentUser.subscriber ) {
+      this.getPackagesBySubscriber(  this.currentUser.subscriber.id );
+      this.getPoliciesBySubscriber( this.currentUser.subscriber.id );
+    }
+    else {
+      this.getPackages();
+      this.getPolicies();
+    }
+
     this.getCurrencies();
-    this.getLoans();
+    /* 
+    this.getPolicies();
     this.getPackages();
+    */
   }
 
   async getCurrencies() {
@@ -52,8 +68,18 @@ export class ListPoliciesComponent implements OnInit {
     )
   }
 
-  async getLoans() {
+  async getPolicies() {
     await this.policyService.getPolicies().subscribe(
+      reponse => {
+        this.policies = reponse;
+      },  error => {
+        console.log(error);
+      }
+    )
+  }
+
+  async getPoliciesBySubscriber(subscriber:number) {
+    await this.policyService.getPoliciesBySubscriber(subscriber).subscribe(
       reponse => {
         this.policies = reponse;
       },  error => {
@@ -64,6 +90,17 @@ export class ListPoliciesComponent implements OnInit {
 
   getPackages() {
     this.pkgService.getPackages().subscribe(
+      reponse => {
+        this.packages = reponse;
+      },  error => {
+        console.log(error);
+      }
+    )
+  }
+
+
+  getPackagesBySubscriber( subscriber:number ) {
+    this.pkgService.getPackageBySubscriber( subscriber ).subscribe(
       reponse => {
         this.packages = reponse;
       },  error => {
@@ -110,6 +147,7 @@ export class ListPoliciesComponent implements OnInit {
     /**
      * Update customer
      */
+     pol.user_Update = this.currentUser;
     this.custService.updateCustomer( pol.customer.id , pol.customer ).subscribe(
       response  => {
         
@@ -119,6 +157,7 @@ export class ListPoliciesComponent implements OnInit {
         /**
          * Update Account
          */
+        pol.account.user_update = this.currentUser;
         this.acctService.updateAccount( pol.account.id, pol.account ).subscribe(
           response  => {
             
@@ -133,7 +172,7 @@ export class ListPoliciesComponent implements OnInit {
                 this.message.success("Police modifiée avec succès!");
                 this.isVisible=false;
                 this.isEditable=false;
-                this.getLoans();
+                this.getPolicies();
               }
           );
 
@@ -187,7 +226,7 @@ export class ListPoliciesComponent implements OnInit {
         console.log("Policy deleted ! " + poli.customer );
         this.message.success("Police supprimé avec succès!");
         this.isdeleted = true;
-        this.getLoans();
+        this.getPolicies();
       }
     )
   }

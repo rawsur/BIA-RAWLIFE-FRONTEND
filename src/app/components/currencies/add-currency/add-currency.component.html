@@ -38,7 +38,7 @@
                             <nz-form-item>
                                     <nz-form-label [nzSpan]="10">Utilisateur</nz-form-label>
                                     <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="required">
-                                        <input nz-input name="user" formControlName="user" [ngModel]="sessionData" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
+                                        <input nz-input name="user" formControlName="user" [ngModel]="currentUser.username" required class="ant-input ng-pristine ng-valid ng-touched" ng-reflect-model="Required Input" readonly />
                                     </nz-form-control>
                             </nz-form-item>
 

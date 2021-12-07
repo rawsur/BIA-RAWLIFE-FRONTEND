@@ -89,4 +89,30 @@ export class AppConfigService {
     return this.appConfig.version;
   }
 
+  get apiasvUrl() {
+    if (!this.appConfig) {
+      throw Error('Config file not loaded!');
+    }
+
+    return this.appConfig.apiAsvUrl;
+  }
+
+  get apiAsvAppName() {
+    if (!this.appConfig) {
+      throw Error('Config file not loaded!');
+    }
+
+    return this.appConfig.apiAsvAppName;
+  }
+
+  get apiAsvLogo() {
+    
+    if (!this.appConfig) {
+      throw Error('Config file not loaded!');
+    }
+
+    return this.appConfig.apiAsvLogo;
+
+  }
+
 }

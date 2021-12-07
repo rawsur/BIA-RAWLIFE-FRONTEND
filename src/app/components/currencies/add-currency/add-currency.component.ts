@@ -20,13 +20,17 @@ export class AddCurrencyComponent implements OnInit {
   currencyForm: FormGroup;
   currency:Currency;
   sessionData:any;
+  sessionUser:any;
   currencies:Currency [];
+  currentUser:User = new User();
   current = 0;
 
-  constructor( private route:Router , private currencyService:CurrencyService , private message: NzMessageService ,  private fb: FormBuilder , private userService:LoginService ) { }
+  constructor( private route:Router , private currencyService:CurrencyService , private message: NzMessageService ,  private fb: FormBuilder , private authService:LoginService  ) { }
 
   ngOnInit(): void {
-    this.sessionData = sessionStorage.getItem('username');
+    
+    this.currentUser = this.authService.CurrentUser;
+
     this.initForms();
   }
 
@@ -46,17 +50,8 @@ export class AddCurrencyComponent implements OnInit {
 
     let uname:string = this.currencyForm.controls['user'].value;
 
-    await this.userService.getUser(uname).then(
-      response=> {
-        let u = new User();
-        u.id = response.id;
-        u.role=response.password;
-        u.subscriber = response.subscriber
-        u.username = response.username;
-        this.currency.user = u;
-        this.currency.user_update  = u;
-      }
-    )
+    this.currency.user = this.currentUser;
+    this.currency.user_update  = this.currentUser;
 
 
     await this.currencyService.saveCurrency(this.currency ).subscribe( 

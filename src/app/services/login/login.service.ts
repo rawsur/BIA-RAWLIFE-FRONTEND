@@ -1,6 +1,6 @@
 import { HttpBackend, HttpClient , HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from 'src/app/models/users/user';
 import { AppConfigService } from '../app-config.service';
@@ -21,13 +21,17 @@ export class LoginService {
 
   private url:string;
   private httpClient : HttpClient;
-    
-  constructor( handler: HttpBackend , private appConfig:AppConfigService  ) { 
-    this.httpClient = new HttpClient(handler);
-  }
+
   
 
-    authenticate( username: string, password: string ) {
+  constructor( handler: HttpBackend , private appConfig:AppConfigService  ) { 
+    
+    this.httpClient = new HttpClient(handler);
+
+  }
+
+
+  authenticate( username: string, password: string ) {
       this.url = this.appConfig.apiBaseUrl;
       return this.httpClient.post<any>(`${this.url}`+"authenticate",{username,password}).pipe(
         map(
@@ -40,28 +44,39 @@ export class LoginService {
             let tokenStr= 'Bearer '+userData.token;
 
             sessionStorage.setItem('token', tokenStr);
-
             sessionStorage.setItem('user', userData.user);
-
-            // console.log( "USER : " + JSON.stringify(userData) );
-            console.log( "USER DATA : " + JSON.stringify(userData.usr ) );
-
+            sessionStorage.setItem( 'currentUser', JSON.stringify( userData.usr ) );
+            
             return userData;
 
           }
         )
     
         );
-    }
+  }
 
-    isUserLoggedIn() {
+  get CurrentUser() {
+    var item = sessionStorage.getItem('currentUser');
+    
+    // console.log("sessionStorage " +  JSON.stringify(item) );
+
+    var currentUser :User = new User();
+    currentUser = item ? JSON.parse(item) : {};
+
+    return currentUser;
+  }
+
+  
+  isUserLoggedIn() {
       let user = sessionStorage.getItem('username')
       return !(user === null)
-    }
+  }
   
-    logOut() {
-      sessionStorage.removeItem('username')
-    }
+  logOut() {
+      sessionStorage.removeItem('username');
+      sessionStorage.removeItem('currentUser');
+      sessionStorage.clear();
+  }
 
 
     // Fetch user

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Agency } from 'src/app/models/agency/agency';
 import { Subscriber } from 'src/app/models/subscribers/subscriber';
@@ -23,12 +24,14 @@ export class AddUserComponent implements OnInit {
   userForm:FormGroup;
   sessionData:any;
   header:string="Informations Utilisateur";
+  currentUser:User = new User();
   
-  constructor( private appConfig:AppConfigService, private fb:FormBuilder ,private titleService:Title , private agencyService:AgencyService , private message:NzMessageService , private subscrService:SubscriberService , private userService:LoginService ) { }
+  constructor( private router: Router , private appConfig:AppConfigService, private fb:FormBuilder ,private titleService:Title , private agencyService:AgencyService , private message:NzMessageService , private subscrService:SubscriberService , private authService:LoginService ) { }
 
   ngOnInit(): void {
     
     this.sessionData = sessionStorage.getItem('username');
+    this.currentUser = this.authService.CurrentUser;
     this.titleService.setTitle( this.appConfig.appName+ " - Création Utilisateur " );
     this.initForms();
 
@@ -52,22 +55,18 @@ export class AddUserComponent implements OnInit {
     user.username = this.userForm.controls['username'].value;
     user.password = this.userForm.controls['username'].value;
     user.subscriber = this.userForm.controls['subscriber'].value;
-
-    console.log(" ROLE        : " + this.userForm.controls['role'].value );
-    console.log(" AGENCY      : " + this.userForm.controls['agency'].value.name );
-    console.log(" SUBSCRIBER  : " + this.userForm.controls['subscriber'].value.name );
+    
 
     user.role = this.userForm.controls['role'].value;
     user.agency=this.userForm.controls['agency'].value;
 
-    this.userService.saveUser(user).subscribe(
+    this.authService.saveUser(user).subscribe(
       response => {
         this.message.success( "Enregistrement utilisateur " + response.username + " effectué " );
-        
+        this.router.navigate(['/user/list-user'] );
       },  error => {
         this.message.error( "Echec Enregistrement utilisateur" + user.username + ". Raisons : " + error.message );
         this.message.error( "Error : " + error.error );
-        console.log(error);
       }
     );
 
@@ -78,7 +77,7 @@ export class AddUserComponent implements OnInit {
       response => {
         this.agencies = response;
       },  error => {
-        console.log(error);
+        this.message.error( "Error : " + error.error );
 
       }
     )
@@ -89,7 +88,7 @@ export class AddUserComponent implements OnInit {
       response => {
         this.subscribers = response;
       },  error => {
-        console.log(error);
+        this.message.error( "Error : " + error.error );
       }
     )
   }

@@ -1,0 +1,67 @@
+<div class="ant-spin-container ng-star-inserted">
+    <!-- Informations Client -->
+    <div class="steps-content">
+
+        <h4>Liste Attestations Assurance Voyage par Cartes</h4>
+
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input type="text" #searchText nz-input placeholder="Rechercher par Nom, Numéro de carte ou Risque ici"  Green   (keyup.enter)="search(searchText.value)"/>
+        </nz-input-group>
+
+        <ng-template #suffixIconSearch>
+            <i nz-icon nzType="search"></i>
+        </ng-template>
+
+        <div class="width-100">
+
+            <nz-table 
+            #middleTable 
+            nzSize="middle" 
+            [nzData]="insurances" 
+            [nzShowPagination]="true" 
+            [nzTotal]="total" 
+            [nzPageSize]="pageSize" 
+            [nzLoading]="loading"
+            >
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Interm</th>
+                    <th>Police</th>
+                    <th>Risque</th>
+                    <th>Assur&eacute;</th>
+                    <th>N° Carte</th>
+                    <th>Date Effet</th>
+                    <th>Date Echéance</th>
+                    <th>Ville</th>
+                    <th>Date Naissance</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let insured of middleTable.data">
+                    <td>{{ insured.id }}</td>
+                    <td>{{ insured.codeinte }}</td>
+                    <td>{{ insured.numepoli }}</td>
+                    <td>{{ insured.coderisq }}</td>
+                    <td>{{ insured.assure }}</td>
+                    <td>{{ insured.numecart }}</td>
+                    <td>{{ insured.effet | date : 'dd/MM/YYYY HH:mm:SS' }}</td>
+                    <td>{{ insured.echeance | date : 'dd/MM/YYYY HH:mm:SS' }}</td>
+                    <td>{{ insured.ville }}</td>
+                    <td>{{ insured.datenais | date : 'dd/MM/YYYY HH:mm:SS' }}</td>
+                    <td>
+                        <button nz-button nzType="default" nzSize="small" (click)="printFile( insured.numepoli , insured.coderisq)" > 
+                                <i nz-icon nzType="printer" nzTheme="outline"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            </nz-table>
+
+        </div>
+
+    </div>
+
+</div>

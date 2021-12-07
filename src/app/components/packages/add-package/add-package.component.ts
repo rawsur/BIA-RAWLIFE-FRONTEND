@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Package } from 'src/app/models/packages/package';
 import { Subscriber } from 'src/app/models/subscribers/subscriber';
+import { User } from 'src/app/models/users/user';
 import { LoginService } from 'src/app/services/login/login.service';
 import { PackageService } from 'src/app/services/packages/package.service';
 import { SubscriberService } from 'src/app/services/subscribers/subscriber.service';
@@ -21,11 +22,13 @@ export class AddPackageComponent implements OnInit {
   sessionData:any;
   subscribers:Subscriber [];
   current = 0;
+  currentUser:User = new User();
 
-  constructor( private route:Router , private subscrService:SubscriberService , private fb: FormBuilder , private pkgService:PackageService , private userService:LoginService ) { }
+  constructor( private route:Router , private subscrService:SubscriberService , private fb: FormBuilder , private pkgService:PackageService , private authService:LoginService ) { }
 
   ngOnInit(): void {
     this.sessionData = sessionStorage.getItem('username');
+    this.currentUser = this.authService.CurrentUser;
     this.initForms();
     this.getSubscribers();
   }
@@ -62,8 +65,8 @@ export class AddPackageComponent implements OnInit {
 
     let uname:string = this.packageForm.controls['user'].value;
 
-    this.package.user = await this.userService.getUser( uname );
-    this.package.user_Updated = this.package.user;
+    this.package.user = this.currentUser;
+    this.package.user_Updated = this.currentUser;
 
     await this.pkgService.savePackage( this.package ).subscribe( 
       data=> {

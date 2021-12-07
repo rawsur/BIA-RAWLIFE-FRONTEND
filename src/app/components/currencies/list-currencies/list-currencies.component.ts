@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Subscription } from 'rxjs';
 import { Currency } from 'src/app/models/currency/currency';
 import { User } from 'src/app/models/users/user';
 import { CurrencyService } from 'src/app/services/currency/currency.service';
@@ -19,18 +20,24 @@ export class ListCurrenciesComponent implements OnInit {
   isEditable:boolean;
   currency:Currency;
   dateFormat:string="dd/MM/YYYY";
+  subscription:Subscription;
+  currentUser:User;
 
 
  constructor( private message: NzMessageService , private modal: NzModalService , private currencyService:CurrencyService  , private userService:LoginService ) { }
 
  
   ngOnInit(): void {
+    
     this.sessionData = sessionStorage.getItem('username');
     this.getCurrencies();
+
   }
 
-  getCurrencies() {
-    this.currencyService.getCurrencies().subscribe(
+  
+
+  async getCurrencies() {
+    await this.currencyService.getCurrencies().subscribe(
       response => {
         this.currencies = response;
         console.log(response);
@@ -56,29 +63,16 @@ export class ListCurrenciesComponent implements OnInit {
   async handleOkEditCurrency( curr:Currency ) {
     
     let uname:string = this.sessionData;
-    
-    await this.userService.getUser(uname).then(
-      response=> {
-        
-        let u = new User();
-        u.id = response.id;
-        u.role=response.password;
-        u.subscriber = response.subscriber
-        u.username = response.username;
-        
-        curr.user_update  = u;
-
-        this.currencyService.updateCurrency( curr.id , curr ).subscribe(
+    curr.user_update  = this.currentUser;
+    this.currencyService.updateCurrency( curr.id , curr ).subscribe
+    (
             response  => {
               this.message.success("Devise modifiée avec succès!");
               this.isVisible=false;
               this.isEditable=false;
               this.getCurrencies();
             }, error  => { console.log(error) }
-        );
-
-      }
-    )
+    );
     
   }
 

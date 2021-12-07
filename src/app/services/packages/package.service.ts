@@ -37,6 +37,10 @@ export class PackageService {
     return this.httpClient.get( this.url+"get/"+id  );
   }
 
+  getPackageBySubscriber ( id:number ) : Observable<any>  {
+    return this.httpClient.get( this.url+"get/subscriber/"+id  );
+  }
+
 
   savePackage( pkg:any ) : Observable<any> {
     return this.httpClient.post( this.url+"save" , pkg );

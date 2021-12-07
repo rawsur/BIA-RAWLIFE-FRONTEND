@@ -23,10 +23,14 @@ export class ListUsersComponent implements OnInit {
   agencies:Agency[];
   isVisible:boolean;
   isEditable:boolean;
+  currentUser:User = new User();
 
-  constructor( private appConfig:AppConfigService , private message:NzMessageService, private modalService:NzModalService , private titleService:Title, private agencyService:AgencyService , private loginService:LoginService , private subscriberService:SubscriberService ) { }
+  constructor( private appConfig:AppConfigService , private message:NzMessageService, private modalService:NzModalService , private titleService:Title, private agencyService:AgencyService , private authService:LoginService , private subscriberService:SubscriberService ) { }
 
   ngOnInit(): void {
+
+    this.currentUser = this.authService.CurrentUser;
+
     this.titleService.setTitle( this.appConfig.appName+ " - Liste Utilisateurs " );
     this.getAgencies();
     this.getSubscribers();
@@ -56,7 +60,7 @@ export class ListUsersComponent implements OnInit {
   }
 
   async getUsers() {
-    await this.loginService.getUsers().subscribe(
+    await this.authService.getUsers().subscribe(
       response => {
         this.users = response;
       },  error => {
@@ -83,7 +87,7 @@ export class ListUsersComponent implements OnInit {
 
   handleReset(usr:User){
 
-    this.loginService.updateUserPwd( usr ).subscribe(
+    this.authService.updateUserPwd( usr ).subscribe(
       response => {
         this.message.success( "Mot de passe utilisateur " + response.username + " réinitialisé. " );
       },  error => {

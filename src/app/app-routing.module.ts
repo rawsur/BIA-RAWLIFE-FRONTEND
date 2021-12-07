@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AddAgencyComponent } from './components/agency/add-agency/add-agency.component';
 import { ListAgencyComponent } from './components/agency/list-agency/list-agency.component';
+import { AsvContentComponent } from './components/assurance-voyage/asv-content/asv-content.component';
+import { ShowInsuranceComponent } from './components/assurance-voyage/show-insurance/show-insurance.component';
 import { AddCurrencyComponent } from './components/currencies/add-currency/add-currency.component';
 import { ListCurrenciesComponent } from './components/currencies/list-currencies/list-currencies.component';
 import { ListCustomersComponent } from './components/customers/list-customers/list-customers.component';
 import { LoginComponent } from './components/login/login/login.component';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { MainComponent } from './components/main/main/main.component';
 import { AddPackageComponent } from './components/packages/add-package/add-package.component';
 import { ListPackagesComponent } from './components/packages/list-packages/list-packages.component';
@@ -22,6 +25,17 @@ import { AuthGuardService } from './services/login/auth-guard.service';
 const routes: Routes = [
   { path:'', component:LoginComponent },
   { path:'logout', component:LoginComponent },
+
+  {
+    path:'menu', component:MainMenuComponent , canActivate:[AuthGuardService]
+  },
+
+  {
+    path:'asv', component:AsvContentComponent,children:
+    [
+      {path:'list-asv', component:ShowInsuranceComponent , canActivate:[AuthGuardService] },
+    ]
+  },
 
   {
     path:'agency', component:MainComponent,children:

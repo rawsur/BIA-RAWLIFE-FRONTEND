@@ -1,0 +1,49 @@
+<nz-divider nzOrientation="center" nzText="MODULES"></nz-divider>
+    
+    <div nz-row [nzGutter]="24">
+
+        <div class="inner-box">
+
+            <div nz-card-grid [ngStyle]="gridStyle" (click)="gotoBIA()" >
+                
+                <nz-card style="width:300px;" [nzCover]="coverTemplate">
+                    <nz-card-meta
+                    nzTitle="Assurance Vie"
+                    nzDescription="Impression BIA Assurance Vie"
+                    [nzAvatar]="avatarTemplate"
+                    >
+                    </nz-card-meta>
+                </nz-card>
+                
+                <ng-template #avatarTemplate>
+                    <nz-avatar nzSrc="assets/img/assurance-vie.jpg"></nz-avatar>
+                </ng-template>
+                
+                <ng-template #coverTemplate>
+                    <img alt="example" src="assets/img/rawsur-asv.jpeg" />
+                </ng-template>   
+                
+            </div>
+
+            <div nz-card-grid [ngStyle]="gridStyle" (click)="gotoASV()">
+                
+                <nz-card style="width:300px;" [nzCover]="coverTemplate1" >
+                    <nz-card-meta
+                    nzTitle="Assurance Voyage"
+                    nzDescription="Impression Assurance Voyage"
+                    [nzAvatar]="avatarTemplate1"
+                    >
+                    </nz-card-meta>
+                </nz-card>
+                
+                <ng-template #avatarTemplate1>
+                    <nz-avatar nzSrc="assets/img/gerer-son-argent-en-voyage.jpg" ></nz-avatar>
+                </ng-template>
+                
+                <ng-template #coverTemplate1>
+                    <img alt="example" src="assets/img/business-travel.jpg" />
+                </ng-template>
+
+            </div>
+        </div>
+    </div>

@@ -24,16 +24,25 @@ export class AddAgencyComponent implements OnInit {
   sessionData:any;
   agencies:Agency [];
   subscribers:Subscriber [];
+  currentUser:User;
 
   current = 0;
   
-  constructor( private fb: FormBuilder, private route:Router , private message:NzMessageService, private agencyService:AgencyService , private subscriberService:SubscriberService, private userService:LoginService , private titleService:Title ) { }
+  constructor( private fb: FormBuilder, private route:Router , private message:NzMessageService, private agencyService:AgencyService , private subscriberService:SubscriberService, private userService:LoginService , private titleService:Title, private authService:LoginService ) { }
 
   ngOnInit(): void {
     this.sessionData = sessionStorage.getItem('username');
+    this.currentUser = this.authService.CurrentUser;
     this.titleService.setTitle("BIA -- Création Agence");
     this.initForms();
-    this.getSubscribers();
+
+    if ( this.currentUser.subscriber ) {
+      this.getSubscriberById( this.currentUser.subscriber.id );
+    } else {
+      this.getSubscribers();
+    }
+
+    
   }
 
   initForms() {
@@ -54,6 +63,15 @@ export class AddAgencyComponent implements OnInit {
     );
   }
 
+  getSubscriberById( subscriber:number ) {
+    this.subscriberService.getSubscribers().subscribe(
+      response =>{
+        this.subscribers = response;
+      },
+      error => { this.message.error("Erreur " +error.message ) }
+    );
+  }
+
   async SaveAgency() {
     this.agency = new Agency();
     this.agency.codeAgence = this.agencyForm.controls['codeAgence'].value;
@@ -61,17 +79,8 @@ export class AddAgencyComponent implements OnInit {
     this.agency.subscriber = this.agencyForm.controls['subscriber'].value;
     let uname:string = this.agencyForm.controls['user'].value;
 
-    await this.userService.getUser(uname).then(
-      response=> {
-        let u = new User();
-        u.id = response.id;
-        u.role=response.password;
-        u.subscriber = response.subscriber
-        u.username = response.username;
-        this.agency.user = u;
-        this.agency.user_Updated  = u;
-      }
-    )
+    this.agency.user = this.currentUser;
+    this.agency.user_Updated = this.currentUser;
 
     await this.agencyService.saveAgency(this.agency ).subscribe( 
       response=> {

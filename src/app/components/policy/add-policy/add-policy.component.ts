@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -56,23 +57,50 @@ export class AddPolicyComponent implements OnInit {
   messages: any[] = [];
   subscription: Subscription;
   account: Account;
+  currentUser: User = new User();
 
-  constructor( private message: NzMessageService ,   private fb: FormBuilder ,private router : Router , private i18n: NzI18nService , private userService:LoginService , private acctService:AccountService , private agencyService:AgencyService , private currService:CurrencyService , private custService:CustomerService , private pkgService : PackageService  , private subscrService:SubscriberService , private policyService:PolicyService  ) { }
+  constructor( private message: NzMessageService ,   private fb: FormBuilder ,private router : Router , private i18n: NzI18nService , private authService:LoginService , private acctService:AccountService , private agencyService:AgencyService , private currService:CurrencyService , private custService:CustomerService , private pkgService : PackageService  , private subscrService:SubscriberService , private policyService:PolicyService ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.CurrentUser;
+    this.sessionData = sessionStorage.getItem('username');
     this.switchLanguage();
     this.initForms();
+
+    if ( this.currentUser.subscriber ) {
+
+      this.getAgenciesBySubscriber( this.currentUser.subscriber.id );
+      this.getCurrencies();
+      this.getPackagesBySubscriber(this.currentUser.subscriber.id);
+      this.getSubscribersLike( this.currentUser.subscriber.id );
+
+    }else {
+      this.getAgencies();
+      this.getCurrencies();
+      this.getPackages();
+      this.getSubscribers();
+    }
+
+    /* 
     this.getAgencies();
     this.getCurrencies();
     this.getPackages();
-    this.getSubscribers();
-    this.sessionData = sessionStorage.getItem('username');
+    this.getSubscribers(); 
+    */
 
   }
 
-
   async getAgencies() {
     await this.agencyService.getAgencies().subscribe(
+      response => {
+        this.agencies = response;
+      },  error => {
+        console.log(error);
+      })
+  }
+
+  async getAgenciesBySubscriber(subscriber:number) {
+    await this.agencyService.getAgencyBySubscriber(subscriber).subscribe(
       response => {
         this.agencies = response;
       },  error => {
@@ -98,9 +126,29 @@ export class AddPolicyComponent implements OnInit {
       })
   }
 
+  async getPackagesBySubscriber ( subscriber:number ) {
+    await this.pkgService.getPackageBySubscriber(subscriber).subscribe(
+      response => {
+        this.pkgs = response;
+      },  error => {
+        console.log(error);
+      })
+  }
+
   async getSubscribers () {
     await this.subscrService.getSubscribers().subscribe(
       response => {
+        this.subscribers = response;
+      },  error => {
+        console.log(error);
+      })
+  }
+
+
+  async getSubscribersLike (subscriber:number) {
+    await this.subscrService.getSubscriberByLikeId(subscriber).subscribe(
+      response => {
+        console.log("Subscriber : " +JSON.stringify( response ) )
         this.subscribers = response;
       },  error => {
         console.log(error);
@@ -168,8 +216,10 @@ export class AddPolicyComponent implements OnInit {
     this.cust.subscriber    = this.customerForm.controls['subscrib'].value;
     /** Get current User */
     let uname:string        = this.customerForm.controls['user'].value;
-    this.cust.user          = await this.userService.getUser( uname );
-    this.cust.user_Updated  = await this.userService.getUser( uname );
+    this.cust.user          = this.currentUser;
+    this.cust.user_Updated  = this.currentUser;
+
+    console.log("Current User in save : " + this.currentUser );
 
     this.returnCust = new Customer();
 

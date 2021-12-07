@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Subscription } from 'rxjs';
 import { Package } from 'src/app/models/packages/package';
-import { Policy } from 'src/app/models/policies/policy';
 import { Subscriber } from 'src/app/models/subscribers/subscriber';
+import { User } from 'src/app/models/users/user';
+import { LoginService } from 'src/app/services/login/login.service';
 import { PackageService } from 'src/app/services/packages/package.service';
 import { SubscriberService } from 'src/app/services/subscribers/subscriber.service';
 
@@ -20,19 +22,26 @@ export class ListPackagesComponent implements OnInit {
   isEditable:boolean;
   package:Package;
   dateFormat:string="dd/MM/YYYY";
+  currentUser:User = new User();
+  subscription:Subscription;
 
-  constructor( private message: NzMessageService , private modal: NzModalService , private subService:SubscriberService , private pkgService:PackageService ) { }
+  constructor( private message: NzMessageService , private modal: NzModalService , private subService:SubscriberService , private pkgService:PackageService, private authService:LoginService ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.CurrentUser ;
     this.getPackages();
     this.getSubscribers();
+
   }
+
+  
 
   getPackages() {
     this.pkgService.getPackages().subscribe(
       response => {
         this.packages = response;
         console.log(response);
+        console.log("GetPackage User : " + this.currentUser.id );
       }
     )
   }
@@ -41,7 +50,6 @@ export class ListPackagesComponent implements OnInit {
     this.subService.getSubscribers().subscribe(
       response => {
         this.subscribers = response;
-        console.log(response);
       }
     )
   }
@@ -57,8 +65,10 @@ export class ListPackagesComponent implements OnInit {
   }
 
   handleOkEditPackage( pkg:Package ) {
+    pkg.user_Updated = this.currentUser ;
     this.pkgService.updatePackage( pkg.id , pkg ).subscribe(
       response  => {
+        
         this.message.success("Package modifiée avec succès!");
         this.isVisible=false;
         this.isEditable=false;

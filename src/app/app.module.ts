@@ -12,19 +12,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { NgxMaskModule } from 'ngx-mask';
 
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import  {NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import  {NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -63,6 +65,10 @@ import { AppConfigService } from './services/app-config.service';
 import { AddUserComponent } from './components/users-management/add-user/add-user.component';
 import { ListUsersComponent } from './components/users-management/list-users/list-users.component';
 import { ResetPasswordComponent } from './components/users-management/reset-password/reset-password.component';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { ShowInsuranceComponent } from './components/assurance-voyage/show-insurance/show-insurance.component';
+import { AsvContentComponent } from './components/assurance-voyage/asv-content/asv-content.component';
+import { AsvSidebarComponent } from './components/assurance-voyage/asv-sidebar/asv-sidebar.component';
 
 registerLocaleData(fr);
 
@@ -100,6 +106,10 @@ export function loadConfiguration(configService: AppConfigService) {
     ListCurrenciesComponent,
     AddAgencyComponent,
     NoThousandPipe,
+    MainMenuComponent,
+    ShowInsuranceComponent,
+    AsvContentComponent,
+    AsvSidebarComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,6 +119,8 @@ export function loadConfiguration(configService: AppConfigService) {
     HttpClientModule,
     BrowserAnimationsModule,
     NgxMaskModule.forRoot(),
+    NzAvatarModule,
+    NzCardModule,
     NzFormModule,
     NzIconModule,
     NzLayoutModule,

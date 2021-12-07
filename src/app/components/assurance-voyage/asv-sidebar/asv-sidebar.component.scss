@@ -1,0 +1,32 @@
+nz-sider {
+    overflow: auto;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    overflow: hidden;
+}
+
+img {
+    height: 100%;
+    max-width: 200px;
+}
+
+
+nz-content {
+    margin: 0px 16px 0;
+    overflow:unset;
+}
+
+.inner-content {
+    padding: 24px;
+    background: #fff;
+    min-height: 360px;
+}
+
+.wrapper {
+    width: 240px;
+  }
+
+  button {
+    margin-bottom: 12px;
+  }

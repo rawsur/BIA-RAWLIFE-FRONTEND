@@ -86,19 +86,15 @@ export class AgencyService {
     return this.httpClient.get( this.url+"get/"+id, requestOptions );
   }
 
-  getAgencyBySubscriber( subscr:Subscriber ) : Observable<Agency[]> {
+  getAgencyBySubscriber( subscr:number ) : Observable<Agency[]> {
     this.url = this.appConfig.apiBaseUrl+"api/v1/agency/";
     const token = sessionStorage.getItem('token');
     
     let httpHeaders = new HttpHeaders()
     httpHeaders.set("Access-Control-Allow-Origin" , "*");
     httpHeaders.set( "Authorization" , `${token}` );
-
-    let httpParams = new HttpParams()
-    httpParams.set('subscriber', subscr.name);
     
-    return this.httpClient.get<Agency[]>( this.url+"get/name", { headers: httpHeaders,
-      params: httpParams, 
+    return this.httpClient.get<Agency[]>( this.url+"get/subscriber/"+subscr, { headers: httpHeaders,
       responseType: 'json'} );
 
   }

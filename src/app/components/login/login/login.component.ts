@@ -13,7 +13,6 @@ import { LoginService } from 'src/app/services/login/login.service';
 })
 export class LoginComponent implements OnInit {
 
-
   validateForm!: FormGroup;
   appName:any;
   appOwner:any;
@@ -54,7 +53,7 @@ export class LoginComponent implements OnInit {
     (
       this.loginservice.authenticate(this.uname, this.pwd).subscribe(
       data => {
-        this.router.navigate(['policy/list-policy']);
+        this.router.navigate(['menu']);
         this.invalidLogin = false;
       },
       error => {

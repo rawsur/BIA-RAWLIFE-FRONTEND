@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscriber } from 'src/app/models/subscribers/subscriber';
+import { User } from 'src/app/models/users/user';
+import { LoginService } from 'src/app/services/login/login.service';
 import { SubscriberService } from 'src/app/services/subscribers/subscriber.service';
 
 @Component({
@@ -16,10 +18,12 @@ export class ListSubscriberComponent implements OnInit {
   isVisible:boolean=false;
   isEditable:boolean=false;
   dateFormat:string="dd/MM/YYYY";
+  currentUser:User = new User();
 
-  constructor( private message:NzMessageService , private modal: NzModalService , private subscriberService:SubscriberService ) { }
+  constructor( private message:NzMessageService , private modal: NzModalService , private subscriberService:SubscriberService , private authService:LoginService ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.CurrentUser;
     this.getSubscribers();
   }
 
